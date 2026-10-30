@@ -391,7 +391,7 @@ footer.site nav { display: flex; gap: 1.5rem; }
         <label class="full">Ort / Location<input id="f-loc" name="ort"></label>
         <label class="full">Nachricht<textarea id="f-msg" name="nachricht" placeholder="Anzahl Gäste, Musikwünsche, Zeitrahmen …"></textarea></label>
         <div class="full"><button class="btn" type="submit">Anfrage senden</button></div>
-        <p class="form-msg" id="form-msg" hidden>Danke! In der fertigen Website geht diese Anfrage per E-Mail an dich. In diesem Entwurf wird noch nichts verschickt.</p>
+        <p class="form-msg" id="form-msg" hidden>Dein E-Mail-Programm öffnet sich mit der fertigen Anfrage. Du musst sie nur noch absenden. Falls nichts passiert, schreib direkt an booking@lfgnmusic.com.</p>
       </form>
     </div>
   </section>
@@ -400,7 +400,7 @@ footer.site nav { display: flex; gap: 1.5rem; }
 <footer class="site dark">
   <div class="wrap">
     <span>© 2026 LFGN · Music for meaningful moments</span>
-    <nav><a href="#">Impressum</a><a href="#">Datenschutz</a></nav>
+    <nav><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></nav>
   </div>
 </footer>
 
@@ -422,7 +422,11 @@ footer.site nav { display: flex; gap: 1.5rem; }
   });
   nav.querySelectorAll('ul a').forEach(function (a) { a.addEventListener('click', function () { nav.classList.remove('open'); mb.setAttribute('aria-expanded', false); }); });
   document.getElementById('anfrage').addEventListener('submit', function (e) {
-    e.preventDefault(); document.getElementById('form-msg').hidden = false;
+    e.preventDefault();
+    var v = function (id) { return document.getElementById(id).value.trim(); };
+    var body = 'Name: ' + v('f-name') + '\nE-Mail: ' + v('f-mail') + '\nDatum: ' + v('f-date') + '\nAnlass: ' + v('f-type') + '\nOrt: ' + v('f-loc') + '\n\n' + v('f-msg');
+    document.getElementById('form-msg').hidden = false;
+    location.href = 'mailto:booking@lfgnmusic.com?subject=' + encodeURIComponent('Anfrage ' + v('f-type') + ' am ' + v('f-date')) + '&body=' + encodeURIComponent(body);
   });
 })();
 </script>
