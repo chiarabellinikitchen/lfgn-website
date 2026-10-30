@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LFGN DJ Website</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="DJ für Hochzeiten, Geburtstage und Firmenfeiern. Referenzen, Termine und Eindrücke vergangener Auftritte.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500&family=Wix+Madefor+Text:wght@400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: ruhige Monochrom-Eleganz wie das LFGN-Logo. Viel Weißraum, haarfeine Linien, Didone-Serife für Headlines, gesperrte Versalien für Labels. Termine als Tracklist. */
+:root {
+  --bg: #ffffff;
+  --surface: #f5f4f1;
+  --line: #e2e0da;
+  --fg: #131313;
+  --muted: #6d6b66;
+  --accent: #8a7350;     /* gedecktes Champagner, sparsam */
+  --display: "Wix Madefor Display", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Newsreader", Georgia, serif;  /* nur kursive Akzente */
+  --sans: "Wix Madefor Text", "Helvetica Neue", Arial, system-ui, sans-serif;
+}
+
+.logo-on-dark { display: none; }
+/* Dunkle Bänder: gleiche Tokens, invertiert */
+.dark { --bg: #0e0e0f; --surface: #1a1a1c; --line: #2c2c2f; --fg: #f3f0ea; --muted: #a3a09a; --accent: #c9ad7e; background: var(--bg); color: var(--fg); border-top: 0; }
+.dark + section, section + .dark { border-top: 0; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.65 var(--sans); margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
+.wrap { max-width: 72rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+section { padding-block: clamp(4.5rem, 10vw, 8rem); border-top: 1px solid var(--line); }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.05; text-wrap: balance; margin: 0; letter-spacing: -.03em; }
+h2 em, h3 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
+h1 em, h2 em { font-style: italic; }
+h2 { font-size: clamp(2.3rem, 5vw, 3.6rem); }
+h3 { font-size: 1.7rem; }
+p { margin: 0; max-width: 62ch; }
+.eyebrow { font: 500 .72rem/1.2 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.lead { color: var(--muted); font-size: 1.15rem; font-weight: 400; }
+.sec-head { display: grid; gap: 1.1rem; margin-bottom: 3.5rem; }
+.ph { border-bottom: 1px dashed var(--accent); }  /* Platzhalter-Markierung */
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+header.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-block: .9rem; }
+.logo { display: block; text-decoration: none; }
+.logo img { height: 3.4rem; width: auto; }
+@media (max-width: 760px) { .logo img { height: 2.6rem; } }
+.nav ul { display: flex; gap: 1.8rem; list-style: none; margin: 0; padding: 0; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; }
+.nav ul a { text-decoration: none; color: var(--muted); transition: color .2s; }
+.nav ul a:hover { color: var(--fg); }
+.btn { display: inline-flex; align-items: center; padding: .95rem 1.7rem; background: var(--fg); color: var(--bg); font: 500 .78rem/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--fg); cursor: pointer; transition: background .2s, color .2s; }
+.btn:hover { background: transparent; color: var(--fg); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--fg); }
+.nav .btn { padding: .7rem 1.1rem; font-size: .7rem; }
+.menu-btn { display: none; background: none; border: 0; padding: .5rem; cursor: pointer; color: var(--fg); }
+.menu-btn span { display: block; width: 22px; height: 1px; background: currentColor; transition: transform .25s; }
+.menu-btn span + span { margin-top: 7px; }
+.nav-right { display: flex; align-items: center; gap: .6rem; }
+@media (max-width: 860px) {
+  .menu-btn { display: block; }
+  .nav ul { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: .5rem max(16px, env(safe-area-inset-right, 0px)) 1rem max(16px, env(safe-area-inset-left, 0px)); }
+  .nav.open ul { display: flex; }
+  .nav ul a { display: block; padding: .9rem 0; border-bottom: 1px solid var(--line); color: var(--fg); }
+  .nav.open .menu-btn span:first-child { transform: translateY(4px) rotate(45deg); }
+  .nav.open .menu-btn span:last-child { transform: translateY(-4px) rotate(-45deg); }
+}
+@media (max-width: 400px) { .nav .btn { padding: .6rem .8rem; font-size: .62rem; letter-spacing: .16em; } }
+
+.hero { padding-block: 0 clamp(4rem, 8vw, 6rem); border: 0; overflow: hidden; }
+.hero-grid { display: grid; gap: 2.2rem; margin-top: clamp(2.5rem, 5vw, 4rem); }
+.hero-logo img { width: min(100%, 34rem); height: auto; }
+.hero-stage { position: relative; overflow: hidden; background: #111; height: calc(100svh - 5.6rem); min-height: 30rem; max-height: 62rem; }
+.hero-stage img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 62% 28%; }
+.hero-stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .15) 55%, transparent 75%), linear-gradient(to top, rgb(0 0 0 / .7) 0%, rgb(0 0 0 / .2) 50%, transparent 75%); }
+.hero-over { position: absolute; left: 0; right: 0; bottom: clamp(2rem, 6vh, 4.5rem); z-index: 1; color: #fff; }
+.hero-over .wrap { display: grid; gap: 1.1rem; }
+.hero-over .eyebrow { color: #fff; font-weight: 600; }
+.hero h1 { font-family: var(--display); font-weight: 500; text-shadow: 0 2px 30px rgb(0 0 0 / .25); letter-spacing: -.035em; line-height: 1; font-size: clamp(2.8rem, 9vw, 8.2rem); max-width: 12ch; color: #fff; text-wrap: balance; }
+.hero h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; display: block; }
+@media (max-width: 760px) { .hero-stage { height: calc(100svh - 4.6rem); min-height: 28rem; } .hero-stage img { object-position: 38% 30%; } .hero-over .eyebrow { font-size: .62rem; letter-spacing: .22em; } }
+.hero .lead { font-size: clamp(1.1rem, 2vw, 1.3rem); }
+.accent { font-family: var(--serif); font-style: italic; color: var(--fg); font-size: 1.12em; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; }
+.facts { display: flex; flex-wrap: wrap; gap: .6rem 2.5rem; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.facts b { color: var(--fg); font-weight: 500; }
+.wave { display: flex; align-items: center; gap: 4px; height: 5.5rem; margin-top: 4rem; }
+.wave i { flex: 1; background: var(--line); min-width: 1px; max-width: 3px; }
+.wave i.on { background: var(--fg); }
+@media (prefers-reduced-motion: no-preference) {
+  .wave i { animation: pulse 3s ease-in-out infinite; animation-delay: calc(var(--d) * -1s); }
+  @keyframes pulse { 50% { transform: scaleY(.6); } }
+}
+
+.about { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.about-img { margin: 0; max-width: 100%; position: sticky; top: 6rem; }
+.about-img img { display: block; width: 100%; height: auto; aspect-ratio: 2/3; object-fit: cover; filter: grayscale(1); }
+.about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 2rem; margin: 1rem 0 0; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+.about-facts dt { font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+.about-facts dd { margin: .2rem 0 0; font: 500 1.3rem/1.2 var(--display); letter-spacing: -.02em; }
+@media (max-width: 760px) { .about-img { position: static; } }
+.about-text { display: grid; gap: 1.3rem; min-width: 0; }
+@media (max-width: 760px) { .about { grid-template-columns: 1fr; } }
+
+.img { position: relative; overflow: hidden; background: var(--surface); background-image: repeating-linear-gradient(135deg, transparent 0 22px, color-mix(in srgb, var(--line) 60%, transparent) 22px 23px); }
+.img figcaption { position: absolute; left: 1rem; bottom: .8rem; right: 1rem; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.img figcaption::before { content: "Foto-Platzhalter · "; color: var(--accent); }
+figure { margin: 0; }
+
+.services { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); border-top: 1px solid var(--line); }
+.service { padding: 2.2rem 1.8rem 2.2rem 0; display: grid; gap: .9rem; align-content: start; border-bottom: 1px solid var(--line); }
+.service p { color: var(--muted); font-size: .98rem; font-weight: 400; }
+.service .eyebrow { color: var(--accent); }
+
+.refs { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: clamp(2rem, 4vw, 3.5rem); }
+blockquote.ref { margin: 0; display: grid; gap: 1.4rem; align-content: start; }
+.ref p { font: italic 400 1.45rem/1.4 var(--serif); }
+.ref p::before { content: "„"; } .ref p::after { content: "“"; }
+.ref footer { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.ref footer b { display: block; color: var(--fg); font-weight: 500; margin-bottom: .2rem; }
+.logos { display: flex; flex-wrap: wrap; gap: .8rem 2.5rem; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.logos span { font: 500 1.1rem/1 var(--display); letter-spacing: -.02em; color: var(--muted); }
+
+.dates { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--fg); }
+.date { display: grid; grid-template-columns: 2.5rem 10rem 1fr auto; gap: 1rem 1.5rem; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+.date .no { font-size: .75rem; letter-spacing: .1em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.date time { font-size: .9rem; font-weight: 500; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.date time small { display: block; color: var(--muted); font-weight: 400; font-size: .78rem; }
+.date .what { min-width: 0; }
+.date .what b { font: 500 1.55rem/1.15 var(--display); letter-spacing: -.025em; display: block; }
+.date .what span { color: var(--muted); font-size: .92rem; }
+.pill { font-size: .66rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; padding: .55rem .9rem; white-space: nowrap; border: 1px solid var(--line); color: var(--muted); }
+.pill.public { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+.pill.open { color: var(--fg); border-color: var(--fg); }
+.dates-note { margin-top: 1.8rem; color: var(--muted); font-size: .95rem; }
+@media (max-width: 700px) {
+  .date { grid-template-columns: 1fr auto; }
+  .date .no { display: none; }
+  .date .what { grid-column: 1 / -1; grid-row: 2; }
+}
+
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 14rem; gap: .6rem; }
+.shot { margin: 0; position: relative; overflow: hidden; background: var(--surface); }
+.shot img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.shot:hover img { transform: scale(1.03); }
+.shot figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 2rem 1rem .8rem; font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: #fff; background: linear-gradient(transparent, rgb(0 0 0 / .55)); }
+.g-a { grid-column: 1 / 3; grid-row: 1 / 3; }
+.g-a img { object-position: 55% 30%; }
+.g-b { grid-column: 3; grid-row: 1 / 3; }
+.g-b img { object-position: 40% 40%; }
+.g-c { grid-column: 4; grid-row: 1; }
+.g-c img { object-position: 30% 35%; }
+.g-d { grid-column: 4; grid-row: 2; }
+.g-d img { object-position: 50% 30%; }
+.g-e { grid-column: 1 / 3; grid-row: 3; }
+.g-e img { object-position: 55% 30%; }
+.g-f { grid-column: 3 / 5; grid-row: 3; }
+.g-f img { object-position: 60% 25%; }
+@media (prefers-reduced-motion: reduce) { .shot img { transition: none; } }
+@media (max-width: 760px) {
+  .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 11rem; }
+  .gallery .shot { grid-column: auto; grid-row: auto; }
+  .gallery .g-a, .gallery .g-e { grid-column: 1 / -1; }
+  .gallery .g-a { grid-row: span 2; }
+  .gallery .g-b { grid-row: span 2; }
+}
+
+.contact { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 6vw, 6rem); }
+.contact-info { display: grid; gap: 1.5rem; align-content: start; min-width: 0; }
+.contact-info dl { display: grid; gap: 1.2rem; margin: 0; }
+.contact-info dt { font-size: .7rem; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.contact-info dd { margin: 0; font-size: 1.1rem; overflow-wrap: anywhere; }
+form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 1.2rem; }
+form .full { grid-column: 1 / -1; }
+label { display: grid; gap: .3rem; font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+input, select, textarea { font: 400 1rem/1.5 var(--sans); letter-spacing: normal; text-transform: none; color: var(--fg); background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: .6rem 0; width: 100%; }
+select option { background: var(--bg); color: var(--fg); }
+input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--fg); }
+textarea { min-height: 7rem; resize: vertical; }
+.form-msg { grid-column: 1 / -1; color: var(--accent); font-size: .95rem; }
+@media (max-width: 760px) { .contact, form { grid-template-columns: 1fr; } }
+
+footer.site { border-top: 1px solid var(--line); padding-block: 2.2rem; color: var(--muted); font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; }
+footer.site .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
+footer.site nav { display: flex; gap: 1.5rem; }
+.genres { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 2.5rem 2rem; }
+.genre { display: grid; gap: .6rem; align-content: start; padding-top: 1.2rem; border-top: 1px solid var(--fg); }
+.genre p { color: var(--muted); font-size: .98rem; font-weight: 400; }
+.tml { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem clamp(2rem, 6vw, 6rem); margin-top: 5rem; padding: clamp(1.8rem, 4vw, 3rem); background: var(--surface); }
+.tml-text { display: grid; gap: 1rem; min-width: 0; }
+.tml-text p { color: var(--muted); font-weight: 400; }
+.years { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: center; }
+.years li { display: grid; gap: .2rem; }
+.years b { font: 500 2.8rem/1 var(--display); letter-spacing: -.03em; font-variant-numeric: lining-nums; }
+.years span { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 760px) { .tml { grid-template-columns: 1fr; } }
+.exp { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+.exp div { display: grid; gap: .4rem; align-content: start; }
+.exp b { font: 500 1.6rem/1.1 var(--display); letter-spacing: -.025em; }
+.exp > div > span { color: var(--muted); font-size: .98rem; font-weight: 400; }
+.ref-ph p { color: var(--muted); }
+.date.past { opacity: .55; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="LFGN Startseite"><img class="logo-on-light" src="logo-dark.png" alt="LFGN"><img class="logo-on-dark" src="logo-light.png" alt="LFGN"></a>
+    <ul>
+      <li><a href="#about">Über mich</a></li>
+      <li><a href="#sound">Sound</a></li>
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="#referenzen">Referenzen</a></li>
+      <li><a href="#termine">Termine</a></li>
+      <li><a href="#galerie">Galerie</a></li>
+    </ul>
+    <div class="nav-right">
+      <a class="btn" href="#kontakt">Datum anfragen</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-stage">
+      <img src="img/rooftop-hero.jpg" alt="Christian legt mit Kopfhörern auf einem Rooftop-Event auf" width="1752" height="1168">
+      <div class="hero-over"><div class="wrap">
+        <span class="eyebrow">DJ für Hochzeiten · Firmen-Events · Openings &amp; Rooftop</span>
+        <h1>Musik für Momente, <em>die bleiben.</em></h1>
+      </div></div>
+    </div>
+    <div class="wrap hero-grid">
+      <p class="lead"><em class="accent">Music for meaningful moments</em> heißt für mich: zuhören, Stimmung spüren, Tanzfläche füllen. Keine Standard-Sets, sondern Musik, die zu eurem Event passt.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#kontakt">Verfügbarkeit prüfen</a>
+        <a class="btn ghost" href="#sound">Meinen Sound kennenlernen</a>
+      </div>
+      <div class="facts">
+        <span>Aktiv seit <b>2012</b></span>
+        <span>Basis <b>Hamburg</b> · international buchbar</span>
+        <span><b>Offline-Setup</b> mit Backup</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about">
+      <figure class="about-img"><img src="portrait.jpg" alt="Christian, DJ hinter LFGN, im Portrait" width="1000" height="1500" loading="lazy"></figure>
+      <div class="about-text">
+        <span class="eyebrow">Über mich</span>
+        <h2>Hi, ich bin Christian, <em>der DJ hinter LFGN.</em></h2>
+        <p class="lead">Ich bin 35, lebe in Hamburg und verbringe einen großen Teil meiner Zeit mit Musik. Hinter dem DJ-Pult, am Klavier oder auf der Suche nach dem nächsten Track, der eine Tanzfläche zum Leuchten bringt.</p>
+        <p>Musik begleitet mich, seit ich denken kann. Als Kind habe ich angefangen, Klavier zu spielen, und dabei gelernt, wie Melodien Spannung aufbauen und wieder auflösen. Dieses Gefühl für Harmonie und Timing nehme ich heute in jedes Set mit.</p>
+        <p>Mit 21 habe ich mir mein erstes Mischpult gekauft. Seit 2012 lege ich auf, zuerst auf Partys im Freundeskreis, später auf Hochzeiten, Firmen-Events, Openings und Rooftop-Partys. Geblieben ist der Anspruch, nicht einfach Songs abzuspielen, sondern einen Abend zu gestalten, an den sich eure Gäste erinnern.</p>
+        <p>Vor jedem Auftritt sprechen wir in Ruhe über euren Abend: Welche Songs sind ein Muss, welche gehen gar nicht, wann kommt der Eröffnungstanz oder die Rede? Am Abend selbst reagiere ich auf eure Gäste statt auf eine feste Playlist.</p>
+        <dl class="about-facts">
+          <div><dt>Basis</dt><dd>Hamburg</dd></div>
+          <div><dt>Hinter dem Pult</dt><dd>seit 2012</dd></div>
+          <div><dt>Am Klavier</dt><dd>seit der Kindheit</dd></div>
+          <div><dt>Setup</dt><dd>Pioneer, Djay Pro &amp; Virtual DJ</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="sound" class="dark">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Mein Sound</span>
+        <h2>Von House bis Hip-Hop, <em>von den 80ern bis heute.</em></h2>
+        <p class="lead">Ich mische Genres so, dass sich niemand auf der Tanzfläche verloren fühlt.</p>
+      </div>
+      <div class="genres">
+        <div class="genre"><h3>Elektronische Musik</h3><p>House, Deep House, Melodic Techno und EDM. Mein Herz schlägt hier am lautesten.</p></div>
+        <div class="genre"><h3>Hip-Hop &amp; RnB</h3><p>Von Classics bis zu aktuellen Tracks, für die Phase, in der die Tanzfläche richtig voll wird.</p></div>
+        <div class="genre"><h3>Charts</h3><p>Die Songs, die jeder mitsingen kann, gezielt dosiert statt in Dauerschleife.</p></div>
+        <div class="genre"><h3>80er, 90er &amp; 2000er</h3><p>Das Beste aus drei Jahrzehnten. Holt zuverlässig jede Generation auf die Fläche.</p></div>
+      </div>
+      <div class="tml">
+        <div class="tml-text">
+          <span class="eyebrow">Inspiration</span>
+          <h3>Tomorrowland, Boom (Belgien)</h3>
+          <p>2019 war ich zum ersten Mal dort, seitdem zieht es mich immer wieder zurück. Die Energie, die Übergänge und die Art, wie dort Tausende Menschen gemeinsam einen Moment erleben, prägen bis heute, wie ich selbst auflege.</p>
+        </div>
+        <ol class="years" aria-label="Besuche bei Tomorrowland">
+          <li><b>2019</b><span>Das erste Mal</span></li>
+          <li><b>2022</b><span>Zurück nach der Pause</span></li>
+          <li><b>2025</b><span>Wieder dabei</span></li>
+          <li><b>2026</b><span>Und gleich nochmal</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="leistungen">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Leistungen</span>
+        <h2>Für jeden Anlass das passende Set</h2>
+        <p class="lead">Jeder Abend ist anders, deshalb erstelle ich jedes Angebot individuell. Preise auf Anfrage.</p>
+      </div>
+      <div class="services">
+        <div class="service"><span class="eyebrow">Auf Anfrage</span><h3>Hochzeiten</h3><p>Vom Sektempfang über das Dinner bis zur Party. Inklusive Vorgespräch, Eröffnungstanz und Musikwünschen eurer Gäste. In Hamburg, deutschlandweit und im Ausland.</p></div>
+        <div class="service"><span class="eyebrow">Auf Anfrage</span><h3>Firmen-Events</h3><p>Weihnachtsfeier, Sommerfest, Jubiläum oder Kundenabend. Dezente Lounge-Musik zum Ankommen, Party zum Ende.</p></div>
+        <div class="service"><span class="eyebrow">Auf Anfrage</span><h3>Openings &amp; Rooftop</h3><p>Stilvoller House-Sound für Store-Openings, Launches und Rooftop-Events, der zur Marke und zur Location passt.</p></div>
+        <div class="service"><span class="eyebrow">Inklusive</span><h3>Technik</h3><p>Pioneer-Controller mit Djay Pro und Virtual DJ, PA-Anlage, Lichteffekte, Funkmikrofon und ein komplettes Backup-System für den Fall der Fälle.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="referenzen" class="dark">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Referenzen</span>
+        <h2>Über zehn Jahre, <em>viele Tanzflächen.</em></h2>
+        <p class="lead">Ein Auszug aus den Anlässen, für die ich seit 2012 gebucht wurde.</p>
+      </div>
+      <div class="exp">
+        <div><b>Hochzeiten</b><span>Von der kleinen Feier im Garten bis zur Destination-Hochzeit in der Toskana</span></div>
+        <div><b>Firmen-Events</b><span>Weihnachtsfeiern, Sommerfeste und Jubiläen mit bis zu <span class="ph">300</span> Gästen</span></div>
+        <div><b>Openings</b><span>Store-Openings und Launch-Events in <span class="ph">Hamburg</span></span></div>
+        <div><b>Rooftop-Events</b><span>Sunset-Sets und Partys über den Dächern der Stadt</span></div>
+      </div>
+      <div class="refs">
+        <blockquote class="ref ref-ph"><p>Hier steht eine echte Kundenstimme, zum Beispiel von einem Hochzeitspaar.</p><footer><b class="ph">Vorname &amp; Vorname</b>Hochzeit · <span class="ph">Ort, Jahr</span></footer></blockquote>
+        <blockquote class="ref ref-ph"><p>Hier steht eine echte Kundenstimme von einer Firmenfeier, idealerweise mit Firmenname.</p><footer><b class="ph">Name, Position</b>Firmen-Event · <span class="ph">Firma, Jahr</span></footer></blockquote>
+        <blockquote class="ref ref-ph"><p>Hier steht eine echte Kundenstimme von einem Opening oder Rooftop-Event.</p><footer><b class="ph">Name, Location</b>Opening · <span class="ph">Ort, Jahr</span></footer></blockquote>
+      </div>
+      <div class="logos" aria-label="Locations und Kunden">
+        <span class="ph">Location 1</span><span class="ph">Firma 2</span><span class="ph">Location 3</span><span class="ph">Firma 4</span><span class="ph">Location 5</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="termine">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Tourdates 2026 / 2027</span>
+        <h2>Wo ich auflege</h2>
+        <p class="lead">Private Feiern zeige ich ohne Namen, nur mit Anlass und Region.</p>
+      </div>
+      <ol class="dates">
+        <li class="date past"><span class="no">01</span><time datetime="2026-10-29">Do 29.10.2026</time><div class="what"><b>Halloween Party</b><span>Firmen-Event · Hamburg</span></div><span class="pill">Gespielt</span></li>
+        <li class="date"><span class="no">02</span><time datetime="2026-12-31">Do 31.12.2026</time><div class="what"><b>Silvester</b><span>Hamburg</span></div><span class="pill open">Bestätigt</span></li>
+        <li class="date"><span class="no">03</span><time datetime="2027-09-09">Do 09.09.2027</time><div class="what"><b>Hochzeit</b><span>Privat · Toskana, Italien</span></div><span class="pill open">Bestätigt</span></li>
+      </ol>
+      <p class="dates-note">Euer Datum ist nicht dabei? Dann ist es wahrscheinlich noch frei. <a href="#kontakt">Jetzt anfragen</a>.</p>
+    </div>
+  </section>
+
+  <section id="galerie" class="dark">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Impressionen</span>
+        <h2>Momente <em>hinter dem Pult.</em></h2>
+      </div>
+      <div class="gallery">
+        <figure class="shot g-a"><img src="img/rooftop-lachen.jpg" alt="Christian lachend am DJ-Pult auf einem Rooftop" loading="lazy"><figcaption>Rooftop Hamburg</figcaption></figure>
+        <figure class="shot g-b"><img src="img/halloween.jpg" alt="Christian an einem Pioneer-Controller auf einer Halloween-Party" loading="lazy"><figcaption>Halloween Firmen-Event, Hamburg</figcaption></figure>
+        <figure class="shot g-c"><img src="img/laser.jpg" alt="Christian am DJ-Pult zwischen grünen Laserstrahlen" loading="lazy"><figcaption>Firmen-Event</figcaption></figure>
+        <figure class="shot g-d"><img src="img/handsup.jpg" alt="Christian mit erhobenen Armen hinter dem DJ-Pult" loading="lazy"><figcaption>Hands up</figcaption></figure>
+        <figure class="shot g-e"><img src="img/rooftop-fokus.jpg" alt="Christian konzentriert mit Kopfhörern beim Auflegen" loading="lazy"><figcaption>Rooftop Hamburg</figcaption></figure>
+        <figure class="shot g-f"><img src="img/rooftop-schirm.jpg" alt="Christian mit Sonnenbrille hinter dem Laptop" loading="lazy"><figcaption>Rooftop Hamburg</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontakt">
+    <div class="wrap contact">
+      <div class="contact-info">
+        <span class="eyebrow">Kontakt</span>
+        <h2>Euer Datum noch frei?</h2>
+        <p class="lead">Schreibt mir Datum, Ort und Anlass. Ich melde mich innerhalb von 24 Stunden mit einem individuellen Angebot.</p>
+        <dl>
+          <div><dt>E-Mail</dt><dd>booking@lfgnmusic.com</dd></div>
+          <div><dt>Telefon / WhatsApp</dt><dd><a href="tel:+4917680139704">0176 801 397 04</a></dd></div>
+          <div><dt>Instagram</dt><dd class="ph">@lfgn.dj</dd></div>
+        </dl>
+      </div>
+      <form id="anfrage">
+        <label>Name<input id="f-name" name="name" required autocomplete="name"></label>
+        <label>E-Mail<input id="f-mail" name="email" type="email" required autocomplete="email"></label>
+        <label>Datum<input id="f-date" name="datum" type="date" required></label>
+        <label>Anlass<select id="f-type" name="anlass"><option>Hochzeit</option><option>Firmen-Event</option><option>Opening / Rooftop</option><option>Private Feier</option><option>Sonstiges</option></select></label>
+        <label class="full">Ort / Location<input id="f-loc" name="ort"></label>
+        <label class="full">Nachricht<textarea id="f-msg" name="nachricht" placeholder="Anzahl Gäste, Musikwünsche, Zeitrahmen …"></textarea></label>
+        <div class="full"><button class="btn" type="submit">Anfrage senden</button></div>
+        <p class="form-msg" id="form-msg" hidden>Danke! In der fertigen Website geht diese Anfrage per E-Mail an dich. In diesem Entwurf wird noch nichts verschickt.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site dark">
+  <div class="wrap">
+    <span>© 2026 LFGN · Music for meaningful moments</span>
+    <nav><a href="#">Impressum</a><a href="#">Datenschutz</a></nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var w = document.getElementById('wave');
+  if (w) {
+  var n = window.innerWidth < 600 ? 60 : 120, html = '';
+  for (var i = 0; i < n; i++) {
+    var x = i / n, env = Math.sin(x * Math.PI) * .7 + .3;
+    var h = Math.max(6, Math.round((Math.abs(Math.sin(i * 1.7) * Math.cos(i * .37)) * .8 + .2) * env * 100));
+    html += '<i class="' + (x < .38 ? 'on' : '') + '" style="height:' + h + '%;--d:' + (i % 12) / 5 + '"></i>';
+  }
+  w.innerHTML = html;
+  }
+  var nav = document.querySelector('header.nav'), mb = document.getElementById('menu-btn');
+  mb.addEventListener('click', function () {
+    var o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', o);
+  });
+  nav.querySelectorAll('ul a').forEach(function (a) { a.addEventListener('click', function () { nav.classList.remove('open'); mb.setAttribute('aria-expanded', false); }); });
+  document.getElementById('anfrage').addEventListener('submit', function (e) {
+    e.preventDefault(); document.getElementById('form-msg').hidden = false;
+  });
+})();
+</script>
+</body>
+</html>
