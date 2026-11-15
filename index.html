@@ -186,6 +186,10 @@ input, select, textarea { font: 400 1rem/1.5 var(--sans); letter-spacing: normal
 select option { background: var(--bg); color: var(--fg); }
 input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--fg); }
 textarea { min-height: 7rem; resize: vertical; }
+.req { text-transform: none; letter-spacing: .02em; font-size: .72rem; opacity: .8; }
+label.consent { display: flex; gap: .8rem; align-items: flex-start; text-transform: none; letter-spacing: normal; font-size: .88rem; line-height: 1.5; }
+label.consent input { width: 1.1rem; height: 1.1rem; flex: none; margin: .15rem 0 0; padding: 0; accent-color: var(--fg); }
+label.consent a { color: inherit; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .f-note { font-size: .82rem; color: var(--muted); margin: 1rem 0 0; }
 .f-note a, .f-err a { color: inherit; }
@@ -410,12 +414,16 @@ footer.site nav { display: flex; gap: 1.5rem; }
         </dl>
       </div>
       <form id="anfrage">
-        <label>Name<input id="f-name" name="name" required autocomplete="name"></label>
-        <label>E-Mail<input id="f-mail" name="email" type="email" required autocomplete="email"></label>
-        <label>Datum<input id="f-date" name="datum" type="date" required></label>
-        <label>Anlass<select id="f-type" name="anlass"><option>Hochzeit</option><option>Firmen-Event</option><option>Opening / Rooftop</option><option>Private Feier</option><option>Sonstiges</option></select></label>
-        <label class="full">Ort / Location<input id="f-loc" name="ort"></label>
-        <label class="full">Nachricht<textarea id="f-msg" name="nachricht" placeholder="Anzahl Gäste, Musikwünsche, Zeitrahmen …"></textarea></label>
+        <label><span>Name <span class="req">(erforderlich)</span></span><input id="f-name" name="name" required autocomplete="name"></label>
+        <label><span>E-Mail <span class="req">(erforderlich)</span></span><input id="f-mail" name="email" type="email" required autocomplete="email"></label>
+        <label><span>Telefon <span class="req">(erforderlich)</span></span><input id="f-tel" name="telefon" type="tel" required autocomplete="tel"></label>
+        <label><span>Darf ich dich über WhatsApp kontaktieren? <span class="req">(erforderlich)</span></span><select id="f-wa" name="whatsapp" required><option value="" disabled selected>Bitte wählen</option><option>Ja</option><option>Nein</option></select></label>
+        <label><span>Datum <span class="req">(erforderlich)</span></span><input id="f-date" name="datum" type="date" required></label>
+        <label><span>Anlass <span class="req">(erforderlich)</span></span><select id="f-type" name="anlass" required><option>Hochzeit</option><option>Firmen-Event</option><option>Opening / Rooftop</option><option>Private Feier</option><option>Sonstiges</option></select></label>
+        <label><span>Ort / Location <span class="req">(erforderlich)</span></span><input id="f-loc" name="ort" required></label>
+        <label><span>Gefunden durch <span class="req">(erforderlich)</span></span><select id="f-src" name="gefunden" required><option value="" disabled selected>Bitte wählen</option><option>Google</option><option>Instagram</option><option>Empfehlung</option><option>Auf einem Event erlebt</option><option>Sonstiges</option></select></label>
+        <label class="full"><span>Nachricht <span class="req">(erforderlich)</span></span><textarea id="f-msg" name="nachricht" required placeholder="Anzahl Gäste, Musikwünsche, Zeitrahmen …"></textarea></label>
+        <label class="full consent"><input type="checkbox" id="f-ok" required><span>Mit dem Absenden des Kontaktformulars bestätige ich, dass ich die <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> zur Kenntnis genommen habe und mit der Verarbeitung meiner Daten einverstanden bin. <span class="req">(erforderlich)</span></span></label>
         <input type="text" name="_honey" id="f-honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="full f-edit"><button class="btn" type="submit">Weiter zur Übersicht</button>
           <p class="f-note">Mit dem Absenden werden deine Angaben über den Dienst FormSubmit an mich übermittelt. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p></div>
@@ -463,7 +471,7 @@ footer.site nav { display: flex; gap: 1.5rem; }
   var $ = function (id) { return document.getElementById(id); };
   var v = function (id) { return $(id).value.trim(); };
   var fmtDate = function (s) { var p = s.split('-'); return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : s; };
-  var fields = [['Name', 'f-name'], ['E-Mail', 'f-mail'], ['Datum', 'f-date'], ['Anlass', 'f-type'], ['Ort', 'f-loc'], ['Nachricht', 'f-msg']];
+  var fields = [['Name', 'f-name'], ['E-Mail', 'f-mail'], ['Telefon', 'f-tel'], ['WhatsApp', 'f-wa'], ['Datum', 'f-date'], ['Anlass', 'f-type'], ['Ort', 'f-loc'], ['Gefunden durch', 'f-src'], ['Nachricht', 'f-msg']];
   var val = function (id) { return id === 'f-date' ? fmtDate(v(id)) : v(id); };
   function show(state) {
     form.classList.toggle('is-review', state === 'review');
@@ -490,7 +498,7 @@ footer.site nav { display: flex; gap: 1.5rem; }
     var btn = $('f-send'); btn.disabled = true; btn.textContent = 'Wird gesendet …';
     var name = v('f-name'), datum = val('f-date'), anlass = v('f-type');
     var data = {
-      Name: name, email: v('f-mail'), Datum: datum, Anlass: anlass, Ort: v('f-loc'), Nachricht: v('f-msg'),
+      Name: name, email: v('f-mail'), Telefon: v('f-tel'), 'WhatsApp-Kontakt erlaubt': v('f-wa'), Datum: datum, Anlass: anlass, Ort: v('f-loc'), 'Gefunden durch': v('f-src'), Nachricht: v('f-msg'), Datenschutz: 'zur Kenntnis genommen und eingewilligt',
       _subject: 'Neue Anfrage: ' + anlass + ' am ' + datum + ' (' + name + ')',
       _template: 'table', _captcha: 'false', _honey: v('f-honey'),
       _autoresponse: 'Hallo ' + name.split(' ')[0] + ',\n\nvielen Dank für deine Anfrage (' + anlass + ' am ' + datum + '). Sie ist bei mir angekommen, und ich melde mich innerhalb von 24 Stunden mit einem individuellen Angebot bei dir.\n\nBeste Grüße\nChristian\n\nLFGN · Music for meaningful moments\n+49 176 801 397 04\nlfgnmusic.com · @lfgnmusic'
