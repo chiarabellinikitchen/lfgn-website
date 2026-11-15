@@ -186,7 +186,17 @@ input, select, textarea { font: 400 1rem/1.5 var(--sans); letter-spacing: normal
 select option { background: var(--bg); color: var(--fg); }
 input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--fg); }
 textarea { min-height: 7rem; resize: vertical; }
-.form-msg { grid-column: 1 / -1; color: var(--accent); font-size: .95rem; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.f-note { font-size: .82rem; color: var(--muted); margin: 1rem 0 0; }
+.f-note a, .f-err a { color: inherit; }
+.f-step h3 { font: 500 1.6rem/1.2 var(--display, var(--sans)); margin: 0 0 1.2rem; }
+.f-sum { display: grid; grid-template-columns: max-content 1fr; gap: .55rem 1.6rem; margin: 0; }
+.f-sum dt { font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-top: .25rem; }
+.f-sum dd { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.f-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.6rem; }
+.f-err { color: var(--accent); margin-top: 1rem; }
+form.is-review > label, form.is-review .f-edit, form.is-done > label, form.is-done .f-edit { display: none; }
+@media (max-width: 480px) { .f-sum { grid-template-columns: 1fr; gap: .1rem; } .f-sum dd { margin-bottom: .7rem; } }
 @media (max-width: 760px) { .contact, form { grid-template-columns: 1fr; } }
 
 footer.site { border-top: 1px solid var(--line); padding-block: 2.2rem; color: var(--muted); font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; }
@@ -406,8 +416,20 @@ footer.site nav { display: flex; gap: 1.5rem; }
         <label>Anlass<select id="f-type" name="anlass"><option>Hochzeit</option><option>Firmen-Event</option><option>Opening / Rooftop</option><option>Private Feier</option><option>Sonstiges</option></select></label>
         <label class="full">Ort / Location<input id="f-loc" name="ort"></label>
         <label class="full">Nachricht<textarea id="f-msg" name="nachricht" placeholder="Anzahl Gäste, Musikwünsche, Zeitrahmen …"></textarea></label>
-        <div class="full"><button class="btn" type="submit">Anfrage senden</button></div>
-        <p class="form-msg" id="form-msg" hidden>Dein E-Mail-Programm öffnet sich mit der fertigen Anfrage. Du musst sie nur noch absenden. Falls nichts passiert, schreib direkt an booking@lfgnmusic.com.</p>
+        <input type="text" name="_honey" id="f-honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="full f-edit"><button class="btn" type="submit">Weiter zur Übersicht</button>
+          <p class="f-note">Mit dem Absenden werden deine Angaben über den Dienst FormSubmit an mich übermittelt. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p></div>
+        <div class="full f-step" id="f-review" hidden>
+          <h3>Passt alles so?</h3>
+          <dl class="f-sum" id="f-sum"></dl>
+          <p class="f-note">Nach dem Absenden bekommst du eine Bestätigung an <b id="f-sum-mail"></b>.</p>
+          <div class="f-actions"><button class="btn" type="submit" id="f-send">Anfrage absenden</button><button class="btn ghost" type="button" id="f-back">Bearbeiten</button></div>
+          <p class="f-err" id="f-err" hidden>Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal oder schreib mir direkt an <a href="mailto:booking@lfgnmusic.com">booking@lfgnmusic.com</a>.</p>
+        </div>
+        <div class="full f-step" id="f-done" hidden role="status">
+          <h3>Danke, <span id="f-done-name"></span>!</h3>
+          <p>Deine Anfrage ist bei mir angekommen. Eine Bestätigung ist an <b id="f-done-mail"></b> unterwegs (falls nicht, schau bitte kurz im Spam-Ordner). Ich melde mich innerhalb von 24 Stunden bei dir.</p>
+        </div>
       </form>
     </div>
   </section>
@@ -437,12 +459,53 @@ footer.site nav { display: flex; gap: 1.5rem; }
     var o = nav.classList.toggle('open'); mb.setAttribute('aria-expanded', o);
   });
   nav.querySelectorAll('ul a').forEach(function (a) { a.addEventListener('click', function () { nav.classList.remove('open'); mb.setAttribute('aria-expanded', false); }); });
-  document.getElementById('anfrage').addEventListener('submit', function (e) {
+  var form = document.getElementById('anfrage');
+  var $ = function (id) { return document.getElementById(id); };
+  var v = function (id) { return $(id).value.trim(); };
+  var fmtDate = function (s) { var p = s.split('-'); return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : s; };
+  var fields = [['Name', 'f-name'], ['E-Mail', 'f-mail'], ['Datum', 'f-date'], ['Anlass', 'f-type'], ['Ort', 'f-loc'], ['Nachricht', 'f-msg']];
+  var val = function (id) { return id === 'f-date' ? fmtDate(v(id)) : v(id); };
+  function show(state) {
+    form.classList.toggle('is-review', state === 'review');
+    form.classList.toggle('is-done', state === 'done');
+    $('f-review').hidden = state !== 'review';
+    $('f-done').hidden = state !== 'done';
+    $('kontakt').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('f-back').addEventListener('click', function () { $('f-err').hidden = true; show('edit'); });
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var v = function (id) { return document.getElementById(id).value.trim(); };
-    var body = 'Name: ' + v('f-name') + '\nE-Mail: ' + v('f-mail') + '\nDatum: ' + v('f-date') + '\nAnlass: ' + v('f-type') + '\nOrt: ' + v('f-loc') + '\n\n' + v('f-msg');
-    document.getElementById('form-msg').hidden = false;
-    location.href = 'mailto:booking@lfgnmusic.com?subject=' + encodeURIComponent('Anfrage ' + v('f-type') + ' am ' + v('f-date')) + '&body=' + encodeURIComponent(body);
+    if (!form.classList.contains('is-review')) {
+      var dl = $('f-sum'); dl.textContent = '';
+      fields.forEach(function (f) {
+        var x = val(f[1]); if (!x) return;
+        var dt = document.createElement('dt'), dd = document.createElement('dd');
+        dt.textContent = f[0]; dd.textContent = x; dl.appendChild(dt); dl.appendChild(dd);
+      });
+      $('f-sum-mail').textContent = v('f-mail');
+      $('f-err').hidden = true;
+      show('review');
+      return;
+    }
+    var btn = $('f-send'); btn.disabled = true; btn.textContent = 'Wird gesendet …';
+    var name = v('f-name'), datum = val('f-date'), anlass = v('f-type');
+    var data = {
+      Name: name, email: v('f-mail'), Datum: datum, Anlass: anlass, Ort: v('f-loc'), Nachricht: v('f-msg'),
+      _subject: 'Neue Anfrage: ' + anlass + ' am ' + datum + ' (' + name + ')',
+      _template: 'table', _captcha: 'false', _honey: v('f-honey'),
+      _autoresponse: 'Hallo ' + name.split(' ')[0] + ',\n\nvielen Dank für deine Anfrage (' + anlass + ' am ' + datum + '). Sie ist bei mir angekommen, und ich melde mich innerhalb von 24 Stunden mit einem individuellen Angebot bei dir.\n\nBeste Grüße\nChristian\n\nLFGN · Music for meaningful moments\n+49 176 801 397 04\nlfgnmusic.com · @lfgnmusic'
+    };
+    fetch('https://formsubmit.co/ajax/booking@lfgnmusic.com', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (String(d.success) !== 'true') throw new Error(d.message || 'failed');
+      $('f-done-name').textContent = name.split(' ')[0];
+      $('f-done-mail').textContent = v('f-mail');
+      form.reset();
+      show('done');
+    }).catch(function () {
+      $('f-err').hidden = false;
+    }).then(function () { btn.disabled = false; btn.textContent = 'Anfrage absenden'; });
   });
 })();
 </script>
