@@ -35,7 +35,7 @@ html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.65 var(--sans); margin: 0; }
 a { color: inherit; }
 :focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
-.wrap { max-width: 72rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 92rem; margin: 0 auto; padding-left: max(clamp(16px, 4vw, 64px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(16px, 4vw, 64px), env(safe-area-inset-right, 0px)); }
 section { padding-block: clamp(4.5rem, 10vw, 8rem); border-top: 1px solid var(--line); }
 h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.05; text-wrap: balance; margin: 0; letter-spacing: -.03em; }
 h2 em, h3 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
