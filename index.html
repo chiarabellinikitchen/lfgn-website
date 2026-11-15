@@ -7,6 +7,8 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="LFGN – Music for meaningful moments. DJ aus Hamburg für Hochzeiten, Firmen-Events, Rooftop-Partys und private Feiern. Electronic, Hip-Hop/RnB, Charts und 80s–2000s. Jetzt Datum anfragen.">
 <link rel="canonical" href="https://lfgnmusic.com/">
+<link rel="alternate" hreflang="de" href="https://lfgnmusic.com/">
+<link rel="alternate" hreflang="en" href="https://lfgnmusic.com/en.html">
 <meta property="og:title" content="LFGN – DJ in Hamburg">
 <meta property="og:description" content="Music for meaningful moments. DJ für Hochzeiten, Firmen-Events und Rooftop-Partys.">
 <meta property="og:image" content="https://lfgnmusic.com/img/rooftop-hero.jpg">
@@ -61,11 +63,18 @@ header.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; b
 .btn:hover { background: transparent; color: var(--fg); }
 .btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
 .btn.ghost:hover { border-color: var(--fg); }
-.nav .btn { padding: .7rem 1.1rem; font-size: .7rem; }
+.nav .btn { padding: .7rem 1.1rem; font-size: .7rem; white-space: nowrap; }
+.nav .btn .sm { display: none; }
+@media (max-width: 520px) { .nav .btn .lg { display: none; } .nav .btn .sm { display: inline; } }
 .menu-btn { display: none; background: none; border: 0; padding: .5rem; cursor: pointer; color: var(--fg); }
 .menu-btn span { display: block; width: 22px; height: 1px; background: currentColor; transition: transform .25s; }
 .menu-btn span + span { margin-top: 7px; }
 .nav-right { display: flex; align-items: center; gap: .6rem; }
+.lang { display: flex; gap: .15rem; font: 500 .7rem/1 var(--sans); letter-spacing: .16em; margin-right: .4rem; }
+.lang a, .lang span { padding: .45rem .4rem; text-decoration: none; color: var(--muted); }
+.lang span { color: var(--fg); border-bottom: 1px solid var(--fg); }
+.lang a:hover { color: var(--fg); }
+@media (max-width: 400px) { .lang { margin-right: 0; } .lang a, .lang span { padding: .45rem .25rem; } }
 @media (max-width: 860px) {
   .menu-btn { display: block; }
   .nav ul { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: .5rem max(16px, env(safe-area-inset-right, 0px)) 1rem max(16px, env(safe-area-inset-left, 0px)); }
@@ -245,7 +254,8 @@ footer.site nav { display: flex; gap: 1.5rem; }
       <li><a href="#galerie">Galerie</a></li>
     </ul>
     <div class="nav-right">
-      <a class="btn" href="#kontakt">Datum anfragen</a>
+      <div class="lang"><span aria-current="true">DE</span><a href="en.html" hreflang="en" lang="en" title="English">EN</a></div>
+      <a class="btn" href="#kontakt"><span class="lg">Datum anfragen</span><span class="sm">Anfragen</span></a>
       <button class="menu-btn" id="menu-btn" type="button" aria-label="Menü öffnen" aria-expanded="false"><span></span><span></span></button>
     </div>
   </div>
